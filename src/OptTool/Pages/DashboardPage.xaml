@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="OptTool.Pages.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+        <Style x:Key="CardLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+        </Style>
+        <Style x:Key="CardValueStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <Style x:Key="CardDetailStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Padding="24" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- 标题 + 操作按钮 -->
+        <Grid Grid.Row="0" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Spacing="2">
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="体检仪表盘" />
+                <TextBlock Style="{StaticResource CardLabelStyle}" Text="只读检测，不会修改任何系统设置" />
+            </StackPanel>
+
+            <Button x:Name="RefreshButton" Grid.Column="1" AutomationProperties.Name="重新检测"
+                    Click="RefreshButton_Click">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon FontSize="14" Glyph="&#xE72C;" />
+                    <TextBlock Text="重新检测" />
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="OptimizeButton" Grid.Column="2" Style="{StaticResource AccentButtonStyle}"
+                    AutomationProperties.Name="一键优化" Click="OptimizeButton_Click">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon FontSize="14" Glyph="&#xE945;" />
+                    <TextBlock Text="一键优化" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <InfoBar x:Name="StatusBar" Grid.Row="1" IsOpen="True" IsClosable="False"
+                 Severity="Informational" Title="检测状态" Message="正在采集系统信息…" />
+
+        <ProgressBar x:Name="LoadingBar" Grid.Row="2" IsIndeterminate="True" Visibility="Visible" />
+
+        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="16">
+
+                <!-- 四张状态卡 -->
+                <Grid ColumnSpacing="16" RowSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource StatCardStyle}">
+                        <StackPanel Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon FontSize="14" Glyph="&#xE770;" />
+                                <TextBlock Style="{StaticResource CardLabelStyle}" Text="操作系统" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource CardValueStyle}"
+                                       Text="{x:Bind OsName, Mode=OneWay}" />
+                            <TextBlock Style="{StaticResource CardDetailStyle}"
+                                       Text="{x:Bind CpuName, Mode=OneWay}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource StatCardStyle}">
+                        <StackPanel Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon FontSize="14" Glyph="&#xE950;" />
+                                <TextBlock Style="{StaticResource CardLabelStyle}" Text="内存占用" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource CardValueStyle}"
+                                       Text="{x:Bind MemoryUsed, Mode=OneWay}" />
+                            <TextBlock Style="{StaticResource CardDetailStyle}"
+                                       Text="{x:Bind MemoryDetail, Mode=OneWay}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource StatCardStyle}">
+                        <StackPanel Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon FontSize="14" Glyph="&#xE7F4;" />
+                                <TextBlock Style="{StaticResource CardLabelStyle}" Text="显卡" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource CardValueStyle}"
+                                       Text="{x:Bind GpuName, Mode=OneWay}" />
+                            <TextBlock Style="{StaticResource CardDetailStyle}"
+                                       Text="{x:Bind GpuDetail, Mode=OneWay}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource StatCardStyle}">
+                        <StackPanel Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon FontSize="14" Glyph="&#xE7FC;" />
+                                <TextBlock Style="{StaticResource CardLabelStyle}" Text="DirectX 特性等级" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource CardValueStyle}"
+                                       Text="{x:Bind FeatureLevel, Mode=OneWay}" />
+                            <TextBlock Style="{StaticResource CardDetailStyle}"
+                                       Text="{x:Bind DxDetail, Mode=OneWay}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- 检测明细 -->
+                <Border Style="{StaticResource StatCardStyle}">
+                    <StackPanel Spacing="12">
+                        <TextBlock FontWeight="SemiBold" Text="检测明细" />
+                        <TextBlock FontFamily="Consolas"
+                                   FontSize="13"
+                                   IsTextSelectionEnabled="True"
+                                   Text="{x:Bind Details, Mode=OneWay}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

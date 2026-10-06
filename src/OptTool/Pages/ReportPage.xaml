@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="OptTool.Pages.ReportPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:OptTool.ViewModels"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+        <Style x:Key="CardLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Padding="24" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- 标题 + 导出按钮 -->
+        <Grid Grid.Row="0" ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Spacing="2">
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="报告" />
+                <TextBlock Style="{StaticResource CardLabelStyle}"
+                           Text="汇总体检结果，可导出 HTML / TXT / JSON 到 data\reports" />
+            </StackPanel>
+
+            <Button Grid.Column="1" AutomationProperties.Name="导出 HTML" Click="ExportHtml_Click">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon FontSize="14" Glyph="&#xE737;" />
+                    <TextBlock Text="导出 HTML" />
+                </StackPanel>
+            </Button>
+            <Button Grid.Column="2" AutomationProperties.Name="导出 TXT" Click="ExportTxt_Click">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon FontSize="14" Glyph="&#xE8A5;" />
+                    <TextBlock Text="导出 TXT" />
+                </StackPanel>
+            </Button>
+            <Button Grid.Column="3" Style="{StaticResource AccentButtonStyle}"
+                    AutomationProperties.Name="导出 JSON" Click="ExportJson_Click">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon FontSize="14" Glyph="&#xE943;" />
+                    <TextBlock Text="导出 JSON" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <InfoBar x:Name="StatusBar" Grid.Row="1" IsOpen="True" IsClosable="False"
+                 Severity="Informational" Title="汇总状态" Message="正在汇总体检结果…" />
+
+        <ProgressBar x:Name="LoadingBar" Grid.Row="2" IsIndeterminate="True" Visibility="Visible" />
+
+        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="12">
+
+                <Border Style="{StaticResource StatCardStyle}">
+                    <StackPanel Spacing="6">
+                        <TextBlock FontWeight="SemiBold" Text="导出位置" />
+                        <TextBlock FontSize="12"
+                                   FontFamily="Consolas"
+                                   IsTextSelectionEnabled="True"
+                                   Text="{x:Bind ViewModel.ReportsDir, Mode=OneWay}" />
+                        <TextBlock FontSize="12"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   IsTextSelectionEnabled="True"
+                                   Text="{x:Bind ViewModel.LastExportPath, Mode=OneWay}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource StatCardStyle}">
+                    <StackPanel Spacing="8">
+                        <TextBlock FontWeight="SemiBold" Text="报告预览（TXT）" />
+                        <TextBlock FontFamily="Consolas"
+                                   FontSize="12"
+                                   IsTextSelectionEnabled="True"
+                                   Text="{x:Bind ViewModel.PreviewText, Mode=OneWay}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

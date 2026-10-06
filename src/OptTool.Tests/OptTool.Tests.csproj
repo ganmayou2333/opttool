@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- 测试工程不引入 WinUI / Windows App SDK 构建目标 -->
+    <UseWinUI>false</UseWinUI>
+    <!-- GeneratedComInterface（DXGI 源生成 COM）需要不安全代码 -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <!--
+    以链接方式编译主工程的纯 C# 服务层源码（不引用 WinUI 可执行工程，
+    避免 Windows App SDK 构建目标干扰测试工程）。
+    源码仍是单一事实来源，未复制。
+  -->
+  <ItemGroup>
+    <Compile Include="..\OptTool\Models\SystemInfoModels.cs" Link="Models\SystemInfoModels.cs" />
+    <Compile Include="..\OptTool\Interop\NativeMethods.cs" Link="Interop\NativeMethods.cs" />
+    <Compile Include="..\OptTool\Services\RegistryKeyParser.cs" Link="Services\RegistryKeyParser.cs" />
+    <Compile Include="..\OptTool\Services\RegistryValueCodec.cs" Link="Services\RegistryValueCodec.cs" />
+    <Compile Include="..\OptTool\Services\SystemInfoService.cs" Link="Services\SystemInfoService.cs" />
+    <Compile Include="..\OptTool\Services\GuardList.cs" Link="Services\GuardList.cs" />
+    <Compile Include="..\OptTool\Services\BackupService.cs" Link="Services\BackupService.cs" />
+    <Compile Include="..\OptTool\Services\OperationHistory.cs" Link="Services\OperationHistory.cs" />
+    <Compile Include="..\OptTool\Models\GpuModels.cs" Link="Models\GpuModels.cs" />
+    <Compile Include="..\OptTool\Interop\DxgiInterop.cs" Link="Interop\DxgiInterop.cs" />
+    <Compile Include="..\OptTool\Interop\D3D12Interop.cs" Link="Interop\D3D12Interop.cs" />
+    <Compile Include="..\OptTool\Services\GpuInfoService.cs" Link="Services\GpuInfoService.cs" />
+  </ItemGroup>
+
+</Project>

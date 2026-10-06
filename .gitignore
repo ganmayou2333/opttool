@@ -1,0 +1,23 @@
+# 构建产物
+bin/
+obj/
+dist/
+
+# 运行时数据目录（便携模式下与 exe 同行）
+data/
+
+# Lead 审核用的临时产物（截图、探针输出等）
+artifacts/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# 发布符号
+*.pdb
+
+# 系统
+Thumbs.db
+desktop.ini

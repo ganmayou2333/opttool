@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "OptTool (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "OptTool (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

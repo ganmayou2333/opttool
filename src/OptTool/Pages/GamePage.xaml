@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="OptTool.Pages.GamePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:OptTool.ViewModels"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+        <Style x:Key="CardLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+        </Style>
+    </Page.Resources>
+
+    <Grid Padding="24" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <StackPanel Spacing="2">
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="游戏环境" />
+                <TextBlock Style="{StaticResource CardLabelStyle}"
+                           Text="显卡 / 驱动 / DirectX / HAGS 只读体检，不注入游戏进程" />
+            </StackPanel>
+        </Grid>
+
+        <InfoBar Grid.Row="1" IsOpen="True" IsClosable="False"
+                 Severity="Informational" Title="说明"
+                 Message="游戏优化实际收益通常只有几个百分点，瓶颈主要在硬件" />
+
+        <InfoBar x:Name="StatusBar" Grid.Row="2" IsOpen="True" IsClosable="False"
+                 Severity="Informational" Title="采集状态" Message="正在采集显卡与驱动信息…" />
+
+        <ProgressBar x:Name="LoadingBar" Grid.Row="3" IsIndeterminate="True" Visibility="Visible" />
+
+        <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="12">
+
+                <!-- 驱动过旧警告 -->
+                <InfoBar IsOpen="{x:Bind ViewModel.HasDriverWarning, Mode=OneWay}"
+                         IsClosable="False"
+                         Severity="Warning"
+                         Title="驱动可能过旧"
+                         Message="{x:Bind ViewModel.DriverWarningText, Mode=OneWay}" />
+
+                <!-- 图形适配器 -->
+                <Border Style="{StaticResource StatCardStyle}">
+                    <StackPanel Spacing="8">
+                        <TextBlock FontWeight="SemiBold" Text="图形适配器" />
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.Adapters}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:AdapterRowViewModel">
+                                    <Border Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                            CornerRadius="6"
+                                            Padding="12"
+                                            Margin="0,0,0,6">
+                                        <StackPanel Spacing="3">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock FontWeight="SemiBold" Text="{x:Bind Description}" />
+                                                <Border Background="{ThemeResource AccentControlElevationBorderBrush}"
+                                                        CornerRadius="4"
+                                                        Padding="6,2">
+                                                    <TextBlock FontSize="11" Text="{x:Bind KindText}" />
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock FontSize="12"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                       Text="{x:Bind VendorText}" />
+                                            <TextBlock FontSize="12"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                       Text="{x:Bind VramText}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- 驱动信息 -->
+                <Border Style="{StaticResource StatCardStyle}">
+                    <StackPanel Spacing="8">
+                        <TextBlock FontWeight="SemiBold" Text="驱动版本与日期" />
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.Drivers}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:DriverRowViewModel">
+                                    <Border Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+                                            CornerRadius="6"
+                                            Padding="12"
+                                            Margin="0,0,0,6">
+                                        <StackPanel Spacing="3">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock FontWeight="SemiBold" Text="{x:Bind AdapterDescription}" />
+                                                <Border Background="{ThemeResource SystemFillColorCautionBackgroundBrush}"
+                                                        CornerRadius="4"
+                                                        Padding="6,2"
+                                                        Visibility="{x:Bind Outdated, Mode=OneWay}">
+                                                    <TextBlock FontSize="11" Text="超过 365 天" />
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock FontSize="12" Text="{x:Bind DriverVersion}" />
+                                            <TextBlock FontSize="12"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                       Text="{x:Bind DateText}" />
+                                            <TextBlock FontSize="12"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                       Text="{x:Bind DaysText}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- D3D12 特性等级 -->
+                <Border Style="{StaticResource StatCardStyle}">
+                    <StackPanel Spacing="8">
+                        <TextBlock FontWeight="SemiBold" Text="D3D12 特性等级" />
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.Features}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:FeatureRowViewModel">
+                                    <StackPanel Margin="0,0,0,6" Spacing="2">
+                                        <TextBlock FontSize="13" Text="{x:Bind AdapterDescription}" />
+                                        <TextBlock FontSize="12"
+                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                   Text="{x:Bind FeatureLevelText}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- HAGS -->
+                <Border Style="{StaticResource StatCardStyle}">
+                    <StackPanel Spacing="4">
+                        <TextBlock FontWeight="SemiBold" Text="硬件加速 GPU 调度" />
+                        <TextBlock FontSize="13" Text="{x:Bind ViewModel.HagsText, Mode=OneWay}" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
